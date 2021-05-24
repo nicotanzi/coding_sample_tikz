@@ -1,0 +1,97 @@
+\documentclass{article}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{fillbetween}
+\usepackage{xcolor}
+\definecolor{azul}{rgb}{0.0, 0.0, 0.55}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%
+% FIGURE 4 %
+%%%%%%%%%%%%%%%%%%%
+
+\begin{tikzpicture}[scale=1]
+\begin{axis}[
+    ymin=-0.5, ymax=1.7, xmin=-0.5, xmax=1.5,
+    ylabel = {$P$}, xlabel={$d$},
+    axis y line=middle,  axis x line=middle,
+    axis line style={latex-latex},
+    ytick=\empty, xtick=\empty,
+    scale only axis, clip=false, scale=1.7]
+    
+    \def\R{1.05} ; % en este ejemplo k=R=1.05
+    % Como k=R eso implica que el precio que maximiza f(P) es P*=0.25. Además f(P*)=0.25 también.
+    %Que a su vez es la altura a la que la pendiente de f(P)=K(d) se hace infinita.
+    \def\Y{0.119047619048} ; % y* el valor de y que hace que K(0)=f(P*)
+    % corta al eje x en (0,0.2381)
+    \def\Ymin{0.05} ; % abscisa (0.1,0) ; ordenadas: (0,0.0142) y (0,0.7758) ; dominio desde -0.1381
+    \def\Ymax{0.4} ; % abscisa (0.8,0) ; dominio desde 0.5619
+    
+    \addplot[name path=B,draw=none] coordinates{(0,0) (0.8,0) (1.5,0.735)};
+    \addplot[name path=A,draw=none] coordinates{(0,0.83) (0.828,1.7) (1.5,1.7)};
+    \addplot[green, opacity=0.15] fill between[of=A and B];
+    
+    % y* %
+    \addplot [ domain=0:0.25, samples=500 ] 
+        {1/4 * ( 1+( 1-(2*\R*\Y-\R*x)*4)^(1/2) )^2}
+        node[below left, rotate=62.5] {$f(P)=K(d;Y)$} ;
+    \addplot [ domain=0:0.25, samples=500 ] 
+        {1/4 * ( 1-( 1-(2*\R*\Y-\R*x)*4)^(1/2) )^2} ;
+    \addplot [ domain=0.25:0.75, samples=300 ] 
+        {1/4 * ( 1-( 1-(2*\R*\Y-\R*x)*4)^(1/2) )^2} ;
+    \addplot [ domain=-0.1:0.75, samples=2 ]
+        {\R*(x-2*\Y)}  node[below left, rotate=45.1]{$c(Y)=0$} ;
+    \node [left] at (axis cs:0,0.25) {$E$};
+    \node [circle,fill=black!80,scale=0.3] at (axis cs:0,0.25) {};
+    \node [circle,fill=black!80,scale=0.3] at (axis cs:0.2381,0) {};
+    \node [below=0.15cm] at (axis cs:0.2381,0) {$d_2(Y)$};
+        
+    % y minimo abscisa (0.1,0) ; ordenadas: (0,0.0142) y (0,0.7758) ; dominio desde -0.1381
+    \addplot [ domain=-0.1381:0, samples=350, blue, dashed] 
+        {1/4 * ( 1+( 1-(2*\R*\Ymin-\R*x)*4)^(1/2) )^2};
+    \addplot [ domain=0:0.1119, samples=150, blue] 
+        {1/4 * ( 1+( 1-(2*\R*\Ymin-\R*x)*4)^(1/2) )^2}
+        node[below left, rotate=62.5] {$f(P)=K(d;Y_{min})$} ;
+    \addplot [ domain=-0.1381:0, samples=350, blue, dashed] 
+        {1/4 * ( 1-( 1-(2*\R*\Ymin-\R*x)*4)^(1/2) )^2};
+    \addplot [ domain=0:0.6119, samples=150, blue] 
+        {1/4 * ( 1-( 1-(2*\R*\Ymin-\R*x)*4)^(1/2) )^2}
+        node[below left, rotate=62.5] ;
+    \addplot [ domain=-0.1381:0.6, samples=2,blue ]
+        {\R*(x-2*\Ymin)} ;
+    \node [rotate=45,blue] at (axis cs:-0.1,-0.15) {$c(Y_{min})=0$};
+    \node [left,blue] at (axis cs:0,0.7758) {$A$};
+    \node [circle,fill=blue!80,scale=0.3] at (axis cs:0,0.7758) {};
+    \node [left,blue] at (axis cs:0,0.0142) {$B$};
+    \node [circle,fill=blue!80,scale=0.3] at (axis cs:0,0.0142) {};
+    \node [circle,fill=blue!80,scale=0.3] at (axis cs:0.1,0) {};
+    \addplot [blue, dotted] coordinates{(0.1,0) (0.1,-0.2)} node [below] {$d_2(Y_{min})$};
+
+    % y max  abscisa (0.8,0) ; dominio desde 0.5619
+    \addplot [ domain=0.5619:0.57, samples=500 , red] 
+        {1/4 * ( 1+( 1-(2*\R*\Ymax-\R*x)*4)^(1/2) )^2} ;
+    \addplot [ domain=0.57:0.8119, samples=300 , red] 
+        {1/4 * ( 1+( 1-(2*\R*\Ymax-\R*x)*4)^(1/2) )^2}
+        node[below left, rotate=62.5] {$f(P)=K(d;Y_{max})$} ;
+    \addplot [ domain=0.5619:0.57, samples=500 , red] 
+        {1/4 * ( 1-( 1-(2*\R*\Ymax-\R*x)*4)^(1/2) )^2} ;
+    \addplot [ domain=0.57:1.3119, samples=300 , red] 
+        {1/4 * ( 1-( 1-(2*\R*\Ymax-\R*x)*4)^(1/2) )^2} ;
+    \addplot [ domain=0.4:1.5, samples=2 , red]
+        {\R*(x-2*\Ymax)}  node[below left, rotate=45]{$c(Y_{max})=0$} ;
+    \node [circle,fill=red!80,scale=0.3] at (axis cs:0.8,0) {};
+    \node [below=0.15cm, red] at (axis cs:0.8,0) {$d_2(Y_{max})$};
+    
+    \addplot[domain=-0.25:0.828] {0.83+\R*x};
+    \node [above right, rotate=45] at (axis cs:0.2,1.01) {$h(d,P;d_{++})=0 $};
+
+    \node[green!20!black] at (axis cs:0.95,1.1) {$c^T>0,\;P>0,\;d>0$,};
+    \node[green!20!black] at (axis cs:0.95,1.2) {$U'_1[Y\frac{k+R}{R}+\frac{kP}{R^2}-d]\geq\beta R\,E[m_+(y_+,d_+;d_{++})]$};
+    
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

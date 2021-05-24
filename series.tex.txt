@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepackage{xcolor}
+\usepackage{filecontents}
+\usepackage{pgfplotstable}
+\definecolor{azul}{rgb}{0.0, 0.0, 0.55}
+
+\begin{document}
+
+Un texto cualquiera.
+
+\bigskip
+
+\pgfplotstableread[col sep=comma]{
+Row,Period,CC_Portugal,Consumption_Portugal,CC_Spain,Consumption_Spain
+1,T-2,-13.99923708,100,-9.675641052,100
+2,T-1,-14.47629833,97.17281958,-9.32993768,106.1497882
+3,T,-10.88276981,-98.71133758,-4.250539127,82.04027306
+4,T+1,-10.11323208,72.81956811,-3.937022673,67.7089214
+}\tseries
+
+\begin{figure}[ht!]
+\centering
+\caption{Portugal}
+\begin{tikzpicture}
+\begin{axis}[
+    xtick=data, xticklabels from table={\tseries}{Period},
+%    x tick label style={anchor=north,font=\small},
+    axis y line*=left, axis x line*=top, axis line style = { draw = none }, ymajorgrids,
+    ymin=-15,ymax=-10,
+    ylabel={\% of GDP},
+    ]
+\addplot[color=azul, mark=*,thick] table [y=CC_Portugal] {\tseries}; \label{cc-gdp}
+\end{axis}
+\begin{axis}[
+%scale only axis,
+axis y line*=right,axis line style = { draw = none },
+ymin=-100,ymax=150,
+xtick=data, xticklabels from table={\tseries}{Period},
+axis x line=none,
+ylabel={De-trended real consumption index},
+legend pos=south west,
+legend style={draw=none,at={(0.5,-0.1)},anchor=north}
+]
+\addlegendimage{/pgfplots/refstyle=cc-gdp};
+\addlegendentry{Current Account (left axis)};
+\addplot[dashed,  mark=*,thick] table [y=Consumption_Portugal] {\tseries};  \addlegendentry{Consumption (right axis)};
+
+\end{axis}
+\end{tikzpicture}
+
+%\floatfoot{Holis}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[ht!]
+\centering
+\caption{Spain}
+\begin{tikzpicture}
+\begin{axis}[
+    xtick=data, xticklabels from table={\tseries}{Period}, xtick distance=1cm,
+%    x tick label style={anchor=north,font=\small},
+    axis y line*=left, axis x line*=top, axis line style = { draw = none }, ymajorgrids,
+    ymin=-10,ymax=-3.5,
+    ylabel={\% of GDP},
+    ]
+\addplot[color=azul, mark=*,thick] table [y=CC_Spain] {\tseries}; \label{cc-gdp}
+\end{axis}
+\begin{axis}[
+%scale only axis,
+axis y line*=right,axis line style = { draw = none },
+ymin=60,ymax=108.75,ytick distance=15,
+xtick=data, xticklabels from table={\tseries}{Period},
+axis x line=none,
+ylabel={De-trended real consumption index},
+legend pos=south west,
+legend style={draw=none,at={(0.5,-0.1)},anchor=north}
+]
+\addlegendimage{/pgfplots/refstyle=cc-gdp};
+\addlegendentry{Current Account (left axis)};
+\addplot[dashed,  mark=*,thick] table [y=Consumption_Spain] {\tseries};  \addlegendentry{Consumption (right axis)};
+
+\end{axis}
+\end{tikzpicture}
+
+%\floatfoot{Holis}
+\end{figure}
+
+
+\end{document}
